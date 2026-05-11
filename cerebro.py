@@ -1,17 +1,22 @@
-nombre = input("¿Quién intenta acceder al sistema? ")
-print("Bienvenido, " + nombre)
+import datetime  # Esta pieza sirve para saber la hora
 
-mision = input("¿Quieres ir a ENTRENAR o DESCANSAR? ")
+# 1. Configuración de Identidad
+nombre_usuario = "Omar" 
+ubicacion = "León, Guanajuato"
 
-if mision == "ENTRENAR":
-    print("Preparando la armadura... ¡A darle con todo!")
+# 2. Sensor de Tiempo (Buenos días, tardes o noches)
+hora = datetime.datetime.now().hour
+if hora < 12:
+    saludo = "Buenos días"
+elif 12 <= hora < 19:
+    saludo = "Buenas tardes"
 else:
-    print("Modo de ahorro de energía activado. Disfrute su descanso, señor.")
+    saludo = "Buenas noches"
 
-humor = input("¿Cómo se siente hoy, señor? ")
+# 3. Frase de Activación
+print(f"{saludo}, Jefe {nombre_usuario}.")
+print("Viernes lista para trabajar con usted, ¿qué haremos hoy?")
 
-if humor == "ABURRIDO":
-    print("¿Sabe qué hace un robot al salir de vacaciones?")
-    print("¡Se va a la playa a cargar las baterías! Jajaja.")
-else:
-    print("Me alegra que se sienta " + humor + ". ¡Vamos por un gran día!")
+# 4. Conciencia de Datos (Fecha y Ubicación)
+print(f"Sistemas activos en: {ubicacion}")
+print(f"Fecha estelar: {datetime.date.today()}")
