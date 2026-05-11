@@ -1,22 +1,27 @@
-import datetime  # Esta pieza sirve para saber la hora
 
-# 1. Configuración de Identidad
-nombre_usuario = "Omar" 
-ubicacion = "León, Guanajuato"
+import datetime
 
-# 2. Sensor de Tiempo (Buenos días, tardes o noches)
-hora = datetime.datetime.now().hour
-if hora < 12:
-    saludo = "Buenos días"
-elif 12 <= hora < 19:
-    saludo = "Buenas tardes"
-else:
-    saludo = "Buenas noches"
+# --- CONFIGURACIÓN DE IDENTIDAD ---
+jefe = "Omar"
+ciudad = "León, Guanajuato"
+frase_activacion = "Viernes lista para trabajar con usted, ¿qué haremos hoy?"
 
-# 3. Frase de Activación
-print(f"{saludo}, Jefe {nombre_usuario}.")
-print("Viernes lista para trabajar con usted, ¿qué haremos hoy?")
+def obtener_saludo():
+    hora = datetime.datetime.now().hour
+    if hora < 12:
+        return "Buenos días"
+    elif 12 <= hora < 19:
+        return "Buenas tardes"
+    else:
+        return "Buenas noches"
 
-# 4. Conciencia de Datos (Fecha y Ubicación)
-print(f"Sistemas activos en: {ubicacion}")
+# --- EJECUCIÓN DEL SISTEMA ---
+print(f"--- SISTEMAS VIERNES ACTIVOS ---")
+print(f"{obtener_saludo()}, Jefe {jefe}.")
+print(frase_activacion)
+print(f"Localización: {ciudad}")
 print(f"Fecha estelar: {datetime.date.today()}")
+print("--------------------------------")
+
+orden = input("Esperando órdenes, Jefe: ")
+print(f"Procesando: {orden}...")
