@@ -1,1 +1,1 @@
-Print "¡Sistemas encendidos! Hola jefe, soy Viernesb."
+print("¡Sistemas encendidos! Hola jefe, soy Viernesb.")
