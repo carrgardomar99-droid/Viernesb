@@ -1,1 +1,1 @@
-"¡Sistemas encendidos! Hola jefe, soy Viernesb."
+Print "¡Sistemas encendidos! Hola jefe, soy Viernesb."
