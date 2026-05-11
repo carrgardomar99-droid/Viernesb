@@ -1,0 +1,1 @@
+"¡Sistemas encendidos! Hola jefe, soy Viernesb."
