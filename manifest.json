@@ -1,0 +1,16 @@
+{
+  "name": "YARBIS System",
+  "short_name": "YARBIS",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#161b22",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/564/564401.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
