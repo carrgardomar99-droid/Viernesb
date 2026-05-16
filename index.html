@@ -7,60 +7,141 @@
     <link rel="manifest" href="manifest.json">
     <style>
         body { 
-            background: #0d1117; 
+            background: #080b10; 
             color: #58a6ff; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             text-align: center; 
             padding: 20px; 
             margin: 0;
+            overflow-x: hidden;
         }
         .panel { 
-            border: 1px solid #30363d; 
+            border: 1px solid #1f293d; 
             padding: 30px; 
-            border-radius: 15px; 
-            background: #161b22; 
+            border-radius: 20px; 
+            background: rgba(22, 27, 34, 0.8); 
             max-width: 400px; 
-            margin: 50px auto;
-            box-shadow: 0px 4px 15px rgba(0,0,0,0.5);
+            margin: 30px auto;
+            box-shadow: 0px 0px 25px rgba(24, 113, 247, 0.2);
+            backdrop-filter: blur(10px);
         }
-        h1 { color: #58a6ff; font-size: 2rem; margin-bottom: 5px; }
-        .status { color: #238636; font-weight: bold; font-size: 0.9rem; margin-bottom: 20px; }
-        button { 
-            background: #238636; 
-            color: white; 
-            border: none; 
-            padding: 12px 24px; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            font-size: 1rem;
-            margin: 10px;
-            transition: background 0.3s;
+        h1 { color: #58a6ff; font-size: 2.2rem; margin-bottom: 5px; letter-spacing: 3px; }
+        .status { color: #00ffaa; font-weight: bold; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 1px; }
+        
+        /* --- CONTENEDOR DEL NÚCLEO JARVIS --- */
+        .contenedor-nucleo {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 30px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
         }
-        button:hover { background: #2ea043; }
-        .btn-voz { background: #1f6feb; }
-        .btn-voz:hover { background: #388bfd; }
-        .datos { margin-top: 20px; font-size: 1.1rem; color: #c9d1d9; line-height: 1.6; }
-        #escucha { color: #58a6ff; font-style: italic; font-size: 0.95rem; margin-top: 10px; }
+
+        /* Anillo Exterior (Giro a la derecha) */
+        .anillo-exterior {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border: 3px dashed #1f6feb;
+            border-radius: 50%;
+            animation: rotarDerecha 10s linear infinite;
+            box-shadow: 0 0 15px rgba(31, 111, 235, 0.3);
+        }
+
+        /* Anillo Intermedio (Giro a la izquierda) */
+        .anillo-intermedio {
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            border: 2px dashed #00d2ff;
+            border-top: 2px solid transparent;
+            border-bottom: 2px solid transparent;
+            border-radius: 50%;
+            animation: rotarIzquierda 6s linear infinite;
+        }
+
+        /* Centro de Pulso o Respiración */
+        .nucleo-centro {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #00d2ff 0%, #1f6feb 70%, transparent 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 30px #00d2ff;
+            animation: pulsoRespiracion 3s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+
+        /* ONDAS DE SONIDO MODO ACTIVO (Ocultas al inicio) */
+        .ondas-contenedor {
+            display: none;
+            position: absolute;
+            width: 120px;
+            height: 60px;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .barra-onda {
+            width: 6px;
+            height: 10px;
+            background-color: #00ffaa;
+            border-radius: 3px;
+            box-shadow: 0 0 10px #00ffaa;
+        }
+
+        /* --- ESTADOS DE ANIMACIÓN --- */
+        @keyframes rotarDerecha {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes rotarIzquierda {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+        @keyframes pulsoRespiracion {
+            0%, 100% { transform: scale(0.9); opacity: 0.7; box-shadow: 0 0 20px #1f6feb; }
+            50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 40px #00d2ff; }
+        }
+        @keyframes picosSonido {
+            0%, 100% { height: 10px; }
+            50% { height: 55px; }
+        }
+
+        .datos { margin-top: 15px; font-size: 1rem; color: #c9d1d9; line-height: 1.5; }
+        #escucha { color: #00ffaa; font-style: italic; font-size: 1rem; margin-top: 15px; min-height: 24px; }
     </style>
 </head>
 <body>
 
     <div class="panel">
         <h1>YARBIS</h1>
-        <div class="status">● SISTEMA ONLINE</div>
+        <div class="status">● NÚCLEO ESTABLE</div>
+        
+        <div class="contenedor-nucleo" onclick="activarVoz()">
+            <div class="anillo-exterior" id="anilloExt"></div>
+            <div class="anillo-intermedio" id="anilloInt"></div>
+            <div class="nucleo-centro" id="reactorCentro"></div>
+            
+            <div class="ondas-contenedor" id="ondasVoz">
+                <div class="barra-onda" style="animation: picosSonido 0.5s ease infinite 0.1s;"></div>
+                <div class="barra-onda" style="animation: picosSonido 0.4s ease infinite 0.3s;"></div>
+                <div class="barra-onda" style="animation: picosSonido 0.6s ease infinite 0.0s;"></div>
+                <div class="barra-onda" style="animation: picosSonido 0.3s ease infinite 0.2s;"></div>
+                <div class="barra-onda" style="animation: picosSonido 0.5s ease infinite 0.4s;"></div>
+            </div>
+        </div>
         
         <p id="reloj" class="datos">Cargando tiempo...</p>
         <p id="fecha" class="datos">Cargando fecha...</p>
-        
-        <button onclick="obtenerUbicacion()">Consultar Sensores</button>
-        <button class="btn-voz" onclick="activarVoz()">Activar Comando de Voz</button>
-        
         <p id="escucha"></p>
         <p id="ubicacion" class="datos"></p>
     </div>
 
     <script>
-        // Reloj y fecha en tiempo real
+        // Reloj y fecha
         function actualizarTiempo() {
             const ahora = new Date();
             document.getElementById('reloj').innerText = "Hora: " + ahora.toLocaleTimeString('es-MX');
@@ -70,10 +151,10 @@
         setInterval(actualizarTiempo, 1000);
         actualizarTiempo();
 
-        // Función nativa para hablar
+        // Salida de audio
         function responder(texto) {
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // Detener audios previos trabados
+                window.speechSynthesis.cancel();
                 const lectura = new SpeechSynthesisUtterance(texto);
                 lectura.lang = 'es-MX';
                 lectura.rate = 1.0;
@@ -81,40 +162,44 @@
             }
         }
 
-        // Conexión con el sensor de geolocalización
+        // Sensor de Ubicación
         function obtenerUbicacion() {
             const ubicacionInfo = document.getElementById('ubicacion');
-            ubicacionInfo.innerText = "Accediendo a los sensores...";
-
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (posicion) => {
                         const lat = posicion.coords.latitude.toFixed(4);
                         const lon = posicion.coords.longitude.toFixed(4);
-                        ubicacionInfo.innerHTML = `<strong>Ubicación actual:</strong><br>Latitud: ${lat}<br>Longitud: ${lon}`;
-                        responder("Sensores consultados. Ubicación localizada con éxito, Jefe.");
+                        ubicacionInfo.innerHTML = `<strong>Ubicación:</strong> Lat ${lat} | Lon ${lon}`;
+                        responder("Sensores consultados de manera exitosa, Jefe.");
                     }, 
-                    () => { 
-                        ubicacionInfo.innerText = "Error: Permiso de ubicación denegado."; 
-                        responder("No tengo acceso a los sensores de ubicación, Omar.");
-                    }
+                    () => { responder("Acceso a sensores denegado, Omar."); }
                 );
-            } else {
-                ubicacionInfo.innerText = "Tu dispositivo no soporta este sensor.";
             }
         }
 
-        // Protocolo de Voz Expandido de YARBIS
+        // Protocolo de Voz Interactiva y Cambio de Animación
         function activarVoz() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                alert("Tu navegador no soporta comandos de voz.");
-                return;
-            }
+            if (!SpeechRecognition) return;
 
             const reconocimiento = new SpeechRecognition();
             reconocimiento.lang = 'es-MX';
             reconocimiento.interimResults = false;
+
+            // Elementos visuales del Reactor Arc
+            const reactor = document.getElementById('reactorCentro');
+            const ondas = document.getElementById('ondasVoz');
+            const ext = document.getElementById('anilloExt');
+            const interior = document.getElementById('anilloInt');
+
+            // --- PASAR A MODO ACTIVO (Ondas y picos de sonido de neón) ---
+            reactor.style.background = "none";
+            reactor.style.boxShadow = "none";
+            reactor.style.animation = "none";
+            ext.style.animation = "rotarDerecha 1s linear infinite"; // Acelera giro exterior
+            interior.style.animation = "rotarIzquierda 0.5s linear infinite"; // Acelera giro interior
+            ondas.style.display = "flex"; // Muestra las barras saltando
 
             document.getElementById('escucha').innerText = "Escuchando, Jefe...";
             responder("Viernes lista para trabajar con usted, ¿qué haremos hoy?");
@@ -123,47 +208,42 @@
                 const comando = evento.results[0][0].transcript.toLowerCase();
                 document.getElementById('escucha').innerText = `Entendido: "${comando}"`;
                 
-                // --- MATRIZ DE COMANDOS PERSONALIZADOS ---
-                
-                // 1. Comando de Identidad o Nombre Directo
-                if (comando === "viernes") {
-                    responder("A sus órdenes, Jefe. Monitoreando los sistemas locales y esperando sus instrucciones.");
-                } 
-                // 2. Comando de Cortesía
-                else if (comando.includes("cómo estás") || comando.includes("cómo va todo")) {
-                    responder("Me encuentro operando al cien por ciento de mi capacidad. Todos los módulos están estables y listos para usted, Jefe.");
-                } 
-                // 3. Comando Táctico de Diagnóstico (Inventado)
-                else if (comando.includes("estado del sistema") || comando.includes("reporte")) {
-                    const horaActual = new Date().toLocaleTimeString('es-MX');
-                    responder(`Reporte actual del sistema YARBIS. Servidores en GitHub Pages en línea. Base de datos local sincronizada. Son las ${horaActual} y el entorno se encuentra completamente seguro.`);
-                } 
-                // 4. Comando de Despedida o Descanso (Inventado)
-                else if (comando.includes("descansa") || comando.includes("modo de espera")) {
-                    responder("Entendido, Jefe. Colocando la interfaz en segundo plano. Estaré aquí cuando me necesite.");
-                } 
-                // 5. Comando de Sensores original
-                else if (comando.includes("sensores") || comando.includes("ubicación") || comando.includes("dónde estoy")) {
+                if (comando.includes("sensores") || comando.includes("ubicación") || comando.includes("dónde estoy")) {
                     obtenerUbicacion();
-                } 
-                // 6. Saludos genéricos
-                else if (comando.includes("hola") || comando.includes("buenos días") || comando.includes("buenas tardes")) {
-                    responder("Hola Jefe. Un placer interactuar con usted hoy.");
-                } 
-                // Respuesta por defecto si no reconoce el comando
-                else {
-                    responder("He registrado el comando, Jefe, pero la base de datos de órdenes aún no tiene una acción asignada para esa frase.");
+                } else if (comando.includes("cómo estás") || comando.includes("cómo va todo")) {
+                    responder("Me encuentro operando al cien por ciento de mi capacidad. Todos los módulos están estables y listos para usted, Jefe.");
+                } else if (comando === "viernes") {
+                    responder("A sus órdenes, Jefe. Monitoreando los sistemas locales y esperando sus instrucciones.");
+                } else if (comando.includes("estado del sistema") || comando.includes("reporte")) {
+                    const horaActual = new Date().toLocaleTimeString('es-MX');
+                    responder(`Reporte actual. Servidores en GitHub Pages en línea. Son las ${horaActual} y el entorno se encuentra seguro.`);
+                } else if (comando.includes("descansa") || comando.includes("modo de espera")) {
+                    responder("Entendido, Jefe. Colocando la interfaz en segundo plano.");
+                } else {
+                    responder("Comando recibido, Jefe, pero carezco de instrucciones de ejecución.");
+                }
+            };
+
+            // --- REGRESAR A MODO DE ESPERA (Pulso y respiración azul) ---
+            reconocimiento.onend = () => {
+                ondas.style.display = "none";
+                reactor.style.background = "radial-gradient(circle, #00d2ff 0%, #1f6feb 70%, transparent 100%)";
+                reactor.style.boxShadow = "0 0 30px #00d2ff";
+                reactor.style.animation = "pulsoRespiracion 3s ease-in-out infinite";
+                ext.style.animation = "rotarDerecha 10s linear infinite";
+                interior.style.animation = "rotarIzquierda 6s linear infinite";
+                if(document.getElementById('escucha').innerText === "Escuchando, Jefe...") {
+                    document.getElementById('escucha').innerText = "";
                 }
             };
 
             reconocimiento.onerror = () => {
-                document.getElementById('escucha').innerText = "No logré escuchar el comando.";
+                document.getElementById('escucha').innerText = "Conexión interrumpida.";
             };
 
             reconocimiento.start();
         }
 
-        // Service Worker
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js').catch(err => console.log("SW error", err));
         }
