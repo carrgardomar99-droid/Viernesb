@@ -60,22 +60,25 @@
     </div>
 
     <script>
-        // Reloj y fecha en tiempo real
+        // Reloj y fecha en tiempo real (Corregido)
         function actualizarTiempo() {
             const ahora = new Date();
             document.getElementById('reloj').innerText = "Hora: " + ahora.toLocaleTimeString('es-MX');
             const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('fecha').innerText = grandmother = ahora.toLocaleDateString('es-MX', opcionesFecha);
+            document.getElementById('fecha').innerText = ahora.toLocaleDateString('es-MX', opcionesFecha);
         }
         setInterval(actualizarTiempo, 1000);
         actualizarTiempo();
 
-        // Función para que YARBIS hable en español
+        // Función nativa para hablar
         function responder(texto) {
             if ('speechSynthesis' in window) {
+                // Detener cualquier respuesta previa que esté trabada
+                window.speechSynthesis.cancel(); 
+                
                 const lectura = new SpeechSynthesisUtterance(texto);
-                lectura.lang = 'es-MX'; // Idioma español México
-                lectura.rate = 1.0;     // Velocidad normal de habla
+                lectura.lang = 'es-MX';
+                lectura.rate = 1.0;
                 window.speechSynthesis.speak(lectura);
             }
         }
@@ -91,8 +94,6 @@
                         const lat = posicion.coords.latitude.toFixed(4);
                         const lon = posicion.coords.longitude.toFixed(4);
                         ubicacionInfo.innerHTML = `<strong>Ubicación actual:</strong><br>Latitud: ${lat}<br>Longitud: ${lon}`;
-                        
-                        // YARBIS responde por voz la confirmación
                         responder("Sensores consultados. Ubicación localizada con éxito, Jefe.");
                     }, 
                     () => { 
@@ -118,13 +119,12 @@
             reconocimiento.interimResults = false;
 
             document.getElementById('escucha').innerText = "Escuchando, Jefe...";
-            responder("Viernes lista, ¿qué haremos hoy?");
+            responder("Viernes lista para trabajar con usted, ¿qué haremos hoy?");
 
             reconocimiento.onresult = (evento) => {
                 const comando = evento.results[0][0].transcript.toLowerCase();
                 document.getElementById('escucha').innerText = `Entendido: "${comando}"`;
                 
-                // Procesar la orden de Omar
                 if (comando.includes("sensores") || comando.includes("ubicación") || comando.includes("dónde estoy")) {
                     obtenerUbicacion();
                 } else if (comando.includes("hola") || comando.includes("buenos días") || comando.includes("buenas tardes")) {
