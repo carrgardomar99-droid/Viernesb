@@ -60,7 +60,7 @@
     </div>
 
     <script>
-        // Reloj y fecha en tiempo real (Corregido)
+        // Reloj y fecha en tiempo real
         function actualizarTiempo() {
             const ahora = new Date();
             document.getElementById('reloj').innerText = "Hora: " + ahora.toLocaleTimeString('es-MX');
@@ -73,9 +73,7 @@
         // Función nativa para hablar
         function responder(texto) {
             if ('speechSynthesis' in window) {
-                // Detener cualquier respuesta previa que esté trabada
-                window.speechSynthesis.cancel(); 
-                
+                window.speechSynthesis.cancel(); // Detener audios previos trabados
                 const lectura = new SpeechSynthesisUtterance(texto);
                 lectura.lang = 'es-MX';
                 lectura.rate = 1.0;
@@ -106,7 +104,7 @@
             }
         }
 
-        // Protocolo de Voz Activo de YARBIS
+        // Protocolo de Voz Expandido de YARBIS
         function activarVoz() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
@@ -125,12 +123,36 @@
                 const comando = evento.results[0][0].transcript.toLowerCase();
                 document.getElementById('escucha').innerText = `Entendido: "${comando}"`;
                 
-                if (comando.includes("sensores") || comando.includes("ubicación") || comando.includes("dónde estoy")) {
+                // --- MATRIZ DE COMANDOS PERSONALIZADOS ---
+                
+                // 1. Comando de Identidad o Nombre Directo
+                if (comando === "viernes") {
+                    responder("A sus órdenes, Jefe. Monitoreando los sistemas locales y esperando sus instrucciones.");
+                } 
+                // 2. Comando de Cortesía
+                else if (comando.includes("cómo estás") || comando.includes("cómo va todo")) {
+                    responder("Me encuentro operando al cien por ciento de mi capacidad. Todos los módulos están estables y listos para usted, Jefe.");
+                } 
+                // 3. Comando Táctico de Diagnóstico (Inventado)
+                else if (comando.includes("estado del sistema") || comando.includes("reporte")) {
+                    const horaActual = new Date().toLocaleTimeString('es-MX');
+                    responder(`Reporte actual del sistema YARBIS. Servidores en GitHub Pages en línea. Base de datos local sincronizada. Son las ${horaActual} y el entorno se encuentra completamente seguro.`);
+                } 
+                // 4. Comando de Despedida o Descanso (Inventado)
+                else if (comando.includes("descansa") || comando.includes("modo de espera")) {
+                    responder("Entendido, Jefe. Colocando la interfaz en segundo plano. Estaré aquí cuando me necesite.");
+                } 
+                // 5. Comando de Sensores original
+                else if (comando.includes("sensores") || comando.includes("ubicación") || comando.includes("dónde estoy")) {
                     obtenerUbicacion();
-                } else if (comando.includes("hola") || comando.includes("buenos días") || comando.includes("buenas tardes")) {
-                    responder("Hola Jefe. El sistema opera con normalidad.");
-                } else {
-                    responder("Comando recibido, pero aún no tengo instrucciones para procesarlo, Omar.");
+                } 
+                // 6. Saludos genéricos
+                else if (comando.includes("hola") || comando.includes("buenos días") || comando.includes("buenas tardes")) {
+                    responder("Hola Jefe. Un placer interactuar con usted hoy.");
+                } 
+                // Respuesta por defecto si no reconoce el comando
+                else {
+                    responder("He registrado el comando, Jefe, pero la base de datos de órdenes aún no tiene una acción asignada para esa frase.");
                 }
             };
 
