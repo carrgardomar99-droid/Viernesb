@@ -1,13 +1,22 @@
-// Service Worker básico para permitir la instalación de la PWA
-self.addEventListener('install', (event) => {
-    self.skipWaiting();
+// Servidor de fondo de YARBIS - Service Worker Activo
+const NOMBRE_CACHE = 'yarbis-core-v3';
+const ACTIVOS = [
+    './',
+    './index.html',
+    './manifest.json'
+];
+
+self.addEventListener('install', (evento) => {
+    evento.waitUntil(
+        caches.open(NOMBRE_CACHE).then((cache) => {
+            return cache.addAll(ACTIVOS);
+        })
+    );
 });
 
-self.addEventListener('activate', (event) => {
-    event.waitUntil(self.clients.claim());
-});
-
-self.addEventListener('fetch', (event) => {
-    // Permite que la app cargue de manera normal mediante internet
-    event.respondWith(fetch(event.request));
-});
+self.addEventListener('fetch', (evento) => {
+    evento.respondWith(
+        caches.match(evento.request).then((respuesta) => {
+            return respuesta || fetch(evento.request);
+        })
+    );
