@@ -1,16 +1,17 @@
 {
-  "name": "YARBIS System",
-  "short_name": "YARBIS",
+  "name": "Yarbis Chat",
+  "short_name": "Yarbis",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#0d1117",
-  "theme_color": "#161b22",
+  "background_color": "#0b132b",
+  "theme_color": "#0b132b",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/564/564401.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/7120/7120412.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }

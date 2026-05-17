@@ -28,7 +28,6 @@
         h1 { color: #58a6ff; font-size: 2.2rem; margin-bottom: 5px; letter-spacing: 3px; }
         .status { color: #00ffaa; font-weight: bold; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 1px; }
         
-        /* --- CONTENEDOR DEL NÚCLEO JARVIS --- */
         .contenedor-nucleo {
             position: relative;
             width: 200px;
@@ -39,8 +38,6 @@
             align-items: center;
             cursor: pointer;
         }
-
-        /* Anillo Exterior (Giro a la derecha) */
         .anillo-exterior {
             position: absolute;
             width: 180px;
@@ -50,8 +47,6 @@
             animation: rotarDerecha 10s linear infinite;
             box-shadow: 0 0 15px rgba(31, 111, 235, 0.3);
         }
-
-        /* Anillo Intermedio (Giro a la izquierda) */
         .anillo-intermedio {
             position: absolute;
             width: 140px;
@@ -62,8 +57,6 @@
             border-radius: 50%;
             animation: rotarIzquierda 6s linear infinite;
         }
-
-        /* Centro de Pulso o Respiración */
         .nucleo-centro {
             position: absolute;
             width: 80px;
@@ -74,8 +67,6 @@
             animation: pulsoRespiracion 3s ease-in-out infinite;
             transition: all 0.3s ease;
         }
-
-        /* ONDAS DE SONIDO MODO ACTIVO (Ocultas al inicio) */
         .ondas-contenedor {
             display: none;
             position: absolute;
@@ -92,35 +83,42 @@
             box-shadow: 0 0 10px #00ffaa;
         }
 
-        /* --- ESTADOS DE ANIMACIÓN --- */
-        @keyframes rotarDerecha {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        @keyframes rotarIzquierda {
-            from { transform: rotate(360deg); }
-            to { transform: rotate(0deg); }
-        }
+        @keyframes rotarDerecha { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes rotarIzquierda { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
         @keyframes pulsoRespiracion {
             0%, 100% { transform: scale(0.9); opacity: 0.7; box-shadow: 0 0 20px #1f6feb; }
             50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 40px #00d2ff; }
         }
-        @keyframes picosSonido {
-            0%, 100% { height: 10px; }
-            50% { height: 55px; }
-        }
+        @keyframes picosSonido { 0%, 100% { height: 10px; } 50% { height: 55px; } }
 
         .datos { margin-top: 15px; font-size: 1rem; color: #c9d1d9; line-height: 1.5; }
         #escucha { color: #00ffaa; font-style: italic; font-size: 1rem; margin-top: 15px; min-height: 24px; }
+        
+        /* --- LA CONSOLA TÁCTICA RECUPERADA --- */
+        .ia-status {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #21262d;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 0.9rem;
+            color: #8b949e;
+            margin-top: 20px;
+            text-align: left;
+            font-family: monospace;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
+        .linea-consola { margin-bottom: 5px; }
+        .tag-ok { color: #00ffaa; font-weight: bold; }
+        .tag-info { color: #58a6ff; }
     </style>
 </head>
 <body>
 
     <div class="panel">
         <h1>YARBIS</h1>
-        <div class="status">● NÚCLEO ESTABLE</div>
+        <div class="status" id="estadoTexto">● NÚCLEO ESTABLE</div>
         
-        <div class="contenedor-nucleo" onclick="activarVoz()">
+        <div class="contenedor-nucleo" onclick="protocoloInicial()">
             <div class="anillo-exterior" id="anilloExt"></div>
             <div class="anillo-intermedio" id="anilloInt"></div>
             <div class="nucleo-centro" id="reactorCentro"></div>
@@ -137,11 +135,17 @@
         <p id="reloj" class="datos">Cargando tiempo...</p>
         <p id="fecha" class="datos">Cargando fecha...</p>
         <p id="escucha"></p>
+        
+        <div class="ia-status">
+            <div class="linea-consola"><span class="tag-info">[SISTEMA]:</span> RAG-Search Core v2.5</div>
+            <div class="linea-consola" id="iaFiltro"><span class="tag-ok">[FILTRO]:</span> Esperando entrada de Omar...</div>
+            <div class="linea-consola" id="iaExtra"></div>
+        </div>
+        
         <p id="ubicacion" class="datos"></p>
     </div>
 
     <script>
-        // Reloj y fecha
         function actualizarTiempo() {
             const ahora = new Date();
             document.getElementById('reloj').innerText = "Hora: " + ahora.toLocaleTimeString('es-MX');
@@ -151,35 +155,25 @@
         setInterval(actualizarTiempo, 1000);
         actualizarTiempo();
 
-        // Salida de audio
-        function responder(texto) {
+        function responder(texto, callback) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 const lectura = new SpeechSynthesisUtterance(texto);
                 lectura.lang = 'es-MX';
                 lectura.rate = 1.0;
+                if (callback) { lectura.onend = () => { callback(); }; }
                 window.speechSynthesis.speak(lectura);
+            } else if (callback) {
+                callback();
             }
         }
 
-        // Sensor de Ubicación
-        function obtenerUbicacion() {
-            const ubicacionInfo = document.getElementById('ubicacion');
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (posicion) => {
-                        const lat = posicion.coords.latitude.toFixed(4);
-                        const lon = posicion.coords.longitude.toFixed(4);
-                        ubicacionInfo.innerHTML = `<strong>Ubicación:</strong> Lat ${lat} | Lon ${lon}`;
-                        responder("Sensores consultados de manera exitosa, Jefe.");
-                    }, 
-                    () => { responder("Acceso a sensores denegado, Omar."); }
-                );
-            }
+        function protocoloInicial() {
+            document.getElementById('escucha').innerText = "Iniciando protocolo...";
+            responder("Viernes lista para trabajar con usted, ¿qué haremos hoy?", activarEscuchaReal);
         }
 
-        // Protocolo de Voz Interactiva y Cambio de Animación
-        function activarVoz() {
+        function activarEscuchaReal() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) return;
 
@@ -187,44 +181,26 @@
             reconocimiento.lang = 'es-MX';
             reconocimiento.interimResults = false;
 
-            // Elementos visuales del Reactor Arc
             const reactor = document.getElementById('reactorCentro');
             const ondas = document.getElementById('ondasVoz');
             const ext = document.getElementById('anilloExt');
             const interior = document.getElementById('anilloInt');
 
-            // --- PASAR A MODO ACTIVO (Ondas y picos de sonido de neón) ---
             reactor.style.background = "none";
             reactor.style.boxShadow = "none";
             reactor.style.animation = "none";
-            ext.style.animation = "rotarDerecha 1s linear infinite"; // Acelera giro exterior
-            interior.style.animation = "rotarIzquierda 0.5s linear infinite"; // Acelera giro interior
-            ondas.style.display = "flex"; // Muestra las barras saltando
-
-            document.getElementById('escucha').innerText = "Escuchando, Jefe...";
-            responder("Viernes lista para trabajar con usted, ¿qué haremos hoy?");
+            ext.style.animation = "rotarDerecha 1.2s linear infinite";
+            interior.style.animation = "rotarIzquierda 0.6s linear infinite";
+            ondas.style.display = "flex";
+            document.getElementById('estadoTexto').innerText = "● ESCUCHANDO ORDEN";
+            document.getElementById('escucha').innerText = "Hable ahora, Jefe...";
 
             reconocimiento.onresult = (evento) => {
-                const comando = evento.results[0][0].transcript.toLowerCase();
+                const comando = evento.results[0][0].transcript.toLowerCase().trim();
                 document.getElementById('escucha').innerText = `Entendido: "${comando}"`;
-                
-                if (comando.includes("sensores") || comando.includes("ubicación") || comando.includes("dónde estoy")) {
-                    obtenerUbicacion();
-                } else if (comando.includes("cómo estás") || comando.includes("cómo va todo")) {
-                    responder("Me encuentro operando al cien por ciento de mi capacidad. Todos los módulos están estables y listos para usted, Jefe.");
-                } else if (comando === "viernes") {
-                    responder("A sus órdenes, Jefe. Monitoreando los sistemas locales y esperando sus instrucciones.");
-                } else if (comando.includes("estado del sistema") || comando.includes("reporte")) {
-                    const horaActual = new Date().toLocaleTimeString('es-MX');
-                    responder(`Reporte actual. Servidores en GitHub Pages en línea. Son las ${horaActual} y el entorno se encuentra seguro.`);
-                } else if (comando.includes("descansa") || comando.includes("modo de espera")) {
-                    responder("Entendido, Jefe. Colocando la interfaz en segundo plano.");
-                } else {
-                    responder("Comando recibido, Jefe, pero carezco de instrucciones de ejecución.");
-                }
+                analizarComandoInteligente(comando);
             };
 
-            // --- REGRESAR A MODO DE ESPERA (Pulso y respiración azul) ---
             reconocimiento.onend = () => {
                 ondas.style.display = "none";
                 reactor.style.background = "radial-gradient(circle, #00d2ff 0%, #1f6feb 70%, transparent 100%)";
@@ -232,20 +208,61 @@
                 reactor.style.animation = "pulsoRespiracion 3s ease-in-out infinite";
                 ext.style.animation = "rotarDerecha 10s linear infinite";
                 interior.style.animation = "rotarIzquierda 6s linear infinite";
-                if(document.getElementById('escucha').innerText === "Escuchando, Jefe...") {
-                    document.getElementById('escucha').innerText = "";
-                }
-            };
-
-            reconocimiento.onerror = () => {
-                document.getElementById('escucha').innerText = "Conexión interrumpida.";
+                document.getElementById('estadoTexto').innerText = "● NÚCLEO ESTABLE";
             };
 
             reconocimiento.start();
         }
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(err => console.log("SW error", err));
+        function analizarComandoInteligente(frase) {
+            const filtroLog = document.getElementById('iaFiltro');
+            const extraLog = document.getElementById('iaExtra');
+            
+            // Comandos de Análisis de Motores de Búsqueda y Veracidad
+            if (frase.includes("busca") || frase.includes("investiga") || frase.includes("qué es")) {
+                filtroLog.innerHTML = "<span style='color: #00ffaa;'>[CONECTANDO] Integrando Google & Gemini...</span>";
+                extraLog.innerHTML = "<span style='color: #58a6ff;'>[ESTADO]: Recogiendo datos en tiempo real.</span>";
+                
+                setTimeout(() => {
+                    responder("Consulta procesada en la red de manera exitosa, Jefe.");
+                }, 1000);
+            } 
+            else if (frase.includes("es verdad") || frase.includes("falso")) {
+                filtroLog.innerHTML = "<span style='color: #ffaa00;'>[FILTRO]: Evaluando veracidad del hecho...</span>";
+                extraLog.innerHTML = "<span style='color: #ff3333;'>[DISCERNIMIENTO]: Análisis anti-fake-news activo.</span>";
+                
+                setTimeout(() => {
+                    responder("He contrastado la información. Mis motores indican un alto índice de datos falsos en esa premisa, Omar.");
+                }, 1000);
+            }
+            else if (frase.includes("actualízate")) {
+                filtroLog.innerHTML = "<span style='color: #00ffaa;'>[FILTRO]: Purgando historial atrasado.</span>";
+                extraLog.innerHTML = "<span style='color: #00ffaa;'>[ESTADO]: Sincronizado al segundo actual.</span>";
+                actualizarTiempo();
+                setTimeout(() => {
+                    responder("Base de datos e información local actualizadas al instante, Jefe.");
+                }, 1000);
+            }
+            // MÓDULOS DE INFORMACIÓN ÚTIL (Tarea 3 - Adelanto Táctico)
+            else if (frase.includes("abre google")) {
+                filtroLog.innerHTML = "<span style='color: #00ffaa;'>[EJECUTANDO]: Desplegando navegador...</span>";
+                responder("Abriendo el motor de búsqueda, Jefe.", () => {
+                    window.open('https://www.google.com', '_blank');
+                });
+            }
+            else if (frase.includes("abre mapas") || frase.includes("abre el mapa")) {
+                filtroLog.innerHTML = "<span style='color: #00ffaa;'>[EJECUTANDO]: Desplegando posicionamiento...</span>";
+                responder("Abriendo Google Maps en un entorno externo, Omar.", () => {
+                    window.open('https://maps.google.com', '_blank');
+                });
+            }
+            else if (frase.includes("cómo estás") || frase.includes("cómo va todo")) {
+                responder("Me encuentro operando al cien por ciento de mi capacidad, Jefe.");
+            } else if (frase === "viernes") {
+                responder("A sus órdenes, Jefe.");
+            } else {
+                responder("Comando procesado a través del núcleo inteligente.");
+            }
         }
     </script>
 </body>

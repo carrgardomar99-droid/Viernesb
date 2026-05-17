@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yarbis Interface - Híbrida</title>
+    <style>
+        body {
+            background-color: #0b132b;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .chat-container {
+            width: 380px;
+            height: 600px;
+            background-color: #1c2541;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0px 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .chat-header {
+            background-color: #0b132b;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            border-bottom: 1px solid #3a506b;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 15px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .user-message {
+            background-color: #00b4d8;
+            color: #ffffff;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .yarbis-message {
+            background-color: #3a506b;
+            color: #ffffff;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+            border-left: 4px solid #00f5d4;
+        }
+
+        /* Área de Controles Inferiores */
+        .chat-input-area {
+            padding: 12px;
+            background-color: #0b132b;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            background-color: #1c2541;
+            border: 1px solid #3a506b;
+            border-radius: 20px;
+            padding: 10px 15px;
+            color: white;
+            outline: none;
+        }
+
+        .btn {
+            border: none;
+            color: #0b132b;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .btn-send {
+            background-color: #00b4d8;
+            color: white;
+        }
+
+        /* Botón de micrófono dinámico */
+        .btn-mic {
+            background-color: #00f5d4;
+        }
+
+        .btn-mic.listening {
+            background-color: #ff4757;
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            YARBIS <span style="color: #00f5d4; font-size: 12px;">• MODO HÍBRIDO</span>
+        </div>
+
+        <div class="chat-messages" id="chatBox">
+            <div class="message yarbis-message">Jefe. ¿Prefiere escribir o hablar hoy? Presione el micrófono para hablar.</div>
+        </div>
+
+        <div class="chat-input-area">
+            <button class="btn btn-mic" id="micBtn" onclick="alternarMicrofono()">🎤</button>
+            
+            <input type="text" id="userInput" placeholder="Escribe un mensaje..." onkeypress="checkEnter(event)">
+            
+            <button class="btn btn-send" onclick="enviarTexto()">➔</button>
+        </div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById('chatBox');
+        const userInput = document.getElementById('userInput');
+        const micBtn = document.getElementById('micBtn');
+
+        // Configuración del Reconocimiento de Voz nativo
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let reconocimiento;
+        let escuchando = false;
+
+        if (SpeechRecognition) {
+            reconocimiento = new SpeechRecognition();
+            reconocimiento.lang = 'es-ES';
+            reconocimiento.continuous = false;
+            reconocimiento.interimResults = false;
+
+            // Cuando el navegador entiende lo que dijiste
+            reconocimiento.onresult = (event) => {
+                const textoEscuchado = event.results[0][0].transcript;
+                procesarMensaje(textoEscuchado, true); // true = fue por voz
+            };
+
+            reconocimiento.onend = () => {
+                cambiarEstadoMic(false);
+            };
+
+            reconocimiento.onerror = () => {
+                cambiarEstadoMic(false);
+            };
+        } else {
+            alert("Tu navegador no soporta reconocimiento de voz. Usa Google Chrome o Edge.");
+        }
+
+        // CONTROL DEL MICRÓFONO
+        function alternarMicrofono() {
+            if (!reconocimiento) return;
+            if (escuchando) {
+                reconocimiento.stop();
+            } else {
+                cambiarEstadoMic(true);
+                reconocimiento.start();
+            }
+        }
+
+        function cambiarEstadoMic(isListening) {
+            escuchando = isListening;
+            if (isListening) {
+                micBtn.classList.add('listening');
+                micBtn.innerText = "🛑";
+                userInput.placeholder = "Escuchando...";
+            } else {
+                micBtn.classList.remove('listening');
+                micBtn.innerText = "🎤";
+                userInput.placeholder = "Escribe un mensaje...";
+            }
+        }
+
+        // CONTROL DEL TEXTO ESCRITO
+        function enviarTexto() {
+            const texto = userInput.value.trim();
+            if (texto === "") return;
+            procesarMensaje(texto, false); // false = fue escrito
+            userInput.value = "";
+        }
+
+        // PROCESAMIENTO GENERAL (Muestra todo en pantalla)
+        function procesarMensaje(texto, porVoz) {
+            // 1. Mostrar lo tuyo en el chat
+            agregarBurbuja(texto, 'usuario');
+
+            // Simular proceso de respuesta (Aquí conectarás tu backend/IA)
+            setTimeout(() => {
+                generarRespuestaViernes(texto, porVoz);
+            }, 800);
+            
