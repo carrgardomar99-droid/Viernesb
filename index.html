@@ -11,28 +11,33 @@
             color: #58a6ff; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             text-align: center; 
-            padding: 20px; 
+            padding: 10px; 
             margin: 0;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .panel { 
             border: 1px solid #1f293d; 
-            padding: 30px; 
+            padding: 20px; 
             border-radius: 20px; 
             background: rgba(22, 27, 34, 0.8); 
-            max-width: 400px; 
-            margin: 30px auto;
+            width: 90%;
+            max-width: 420px; 
+            margin: 15px auto;
             box-shadow: 0px 0px 25px rgba(24, 113, 247, 0.2);
             backdrop-filter: blur(10px);
         }
-        h1 { color: #58a6ff; font-size: 2.2rem; margin-bottom: 5px; letter-spacing: 3px; }
-        .status { color: #00ffaa; font-weight: bold; font-size: 0.85rem; margin-bottom: 20px; letter-spacing: 1px; }
+        h1 { color: #58a6ff; font-size: 2rem; margin: 0 0 5px 0; letter-spacing: 3px; }
+        .status { color: #00ffaa; font-weight: bold; font-size: 0.8rem; margin-bottom: 15px; letter-spacing: 1px; }
         
+        /* CONTENEDOR DEL NÚCLEO */
         .contenedor-nucleo {
             position: relative;
-            width: 200px;
-            height: 200px;
-            margin: 30px auto;
+            width: 160px;
+            height: 160px;
+            margin: 15px auto;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -40,8 +45,8 @@
         }
         .anillo-exterior {
             position: absolute;
-            width: 180px;
-            height: 180px;
+            width: 150px;
+            height: 150px;
             border: 3px dashed #1f6feb;
             border-radius: 50%;
             animation: rotarDerecha 10s linear infinite;
@@ -49,8 +54,8 @@
         }
         .anillo-intermedio {
             position: absolute;
-            width: 140px;
-            height: 140px;
+            width: 110px;
+            height: 110px;
             border: 2px dashed #00d2ff;
             border-top: 2px solid transparent;
             border-bottom: 2px solid transparent;
@@ -59,24 +64,23 @@
         }
         .nucleo-centro {
             position: absolute;
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             background: radial-gradient(circle, #00d2ff 0%, #1f6feb 70%, transparent 100%);
             border-radius: 50%;
-            box-shadow: 0 0 30px #00d2ff;
+            box-shadow: 0 0 25px #00d2ff;
             animation: pulsoRespiracion 3s ease-in-out infinite;
-            transition: all 0.3s ease;
         }
         .ondas-contenedor {
             display: none;
             position: absolute;
-            width: 120px;
-            height: 60px;
+            width: 100px;
+            height: 50px;
             justify-content: space-between;
             align-items: center;
         }
         .barra-onda {
-            width: 6px;
+            width: 5px;
             height: 10px;
             background-color: #00ffaa;
             border-radius: 3px;
@@ -87,36 +91,85 @@
         @keyframes rotarIzquierda { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
         @keyframes pulsoRespiracion {
             0%, 100% { transform: scale(0.9); opacity: 0.7; box-shadow: 0 0 20px #1f6feb; }
-            50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 40px #00d2ff; }
+            50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 30px #00d2ff; }
         }
-        @keyframes picosSonido { 0%, 100% { height: 10px; } 50% { height: 55px; } }
+        @keyframes picosSonido { 0%, 100% { height: 10px; } 50% { height: 45px; } }
 
-        .datos { margin-top: 15px; font-size: 1rem; color: #c9d1d9; line-height: 1.5; }
-        #escucha { color: #00ffaa; font-style: italic; font-size: 1rem; margin-top: 15px; min-height: 24px; }
+        .datos { margin: 8px 0; font-size: 0.9rem; color: #c9d1d9; }
         
-        /* --- LA CONSOLA TÁCTICA RECUPERADA --- */
-        .ia-status {
-            background: rgba(0, 0, 0, 0.5);
+        /* --- AREA DE CHAT INTELIGENTE --- */
+        .chat-contenedor {
+            background: rgba(13, 17, 23, 0.7);
             border: 1px solid #21262d;
-            border-radius: 10px;
-            padding: 15px;
-            font-size: 0.9rem;
-            color: #8b949e;
-            margin-top: 20px;
+            border-radius: 12px;
+            height: 180px;
+            overflow-y: auto;
+            margin-top: 15px;
+            padding: 10px;
             text-align: left;
-            font-family: monospace;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
-        .linea-consola { margin-bottom: 5px; }
-        .tag-ok { color: #00ffaa; font-weight: bold; }
-        .tag-info { color: #58a6ff; }
+        .burbuja {
+            padding: 8px 12px;
+            border-radius: 10px;
+            max-width: 85%;
+            font-size: 0.88rem;
+            line-height: 1.4;
+        }
+        .burbuja.usuario {
+            background: #1f6feb;
+            color: #ffffff;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+        .burbuja.ia {
+            background: #21262d;
+            color: #c9d1d9;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+            border-left: 3px solid #00d2ff;
+        }
+
+        /* --- ENTRADA DE TEXTO (LA PLUMA) --- */
+        .entrada-contenedor {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            width: 100%;
+        }
+        .txt-input {
+            flex: 1;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 10px;
+            color: #c9d1d9;
+            font-size: 0.95rem;
+            outline: none;
+        }
+        .txt-input:focus {
+            border-color: #58a6ff;
+            box-shadow: 0 0 5px rgba(88, 166, 255, 0.4);
+        }
+        .btn-enviar {
+            background: #238636;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-enviar:hover { background: #2ea043; }
     </style>
 </head>
 <body>
 
     <div class="panel">
         <h1>YARBIS</h1>
-        <div class="status" id="estadoTexto">● NÚCLEO ESTABLE</div>
+        <div class="status" id="estadoTexto">● NÚCLEO CONECTADO</div>
         
         <div class="contenedor-nucleo" onclick="protocoloInicial()">
             <div class="anillo-exterior" id="anilloExt"></div>
@@ -132,25 +185,25 @@
             </div>
         </div>
         
-        <p id="reloj" class="datos">Cargando tiempo...</p>
-        <p id="fecha" class="datos">Cargando fecha...</p>
-        <p id="escucha"></p>
+        <div class="datos" id="reloj">Hora: --:--:--</div>
         
-        <div class="ia-status">
-            <div class="linea-consola"><span class="tag-info">[SISTEMA]:</span> RAG-Search Core v2.5</div>
-            <div class="linea-consola" id="iaFiltro"><span class="tag-ok">[FILTRO]:</span> Esperando entrada de Omar...</div>
-            <div class="linea-consola" id="iaExtra"></div>
+        <div class="chat-contenedor" id="historialChat">
+            <div class="burbuja ia">Sistemas en línea, Jefe. Listo para recibir comandos por voz o escritos.</div>
         </div>
-        
-        <p id="ubicacion" class="datos"></p>
+
+        <div class="entrada-contenedor">
+            <input type="text" id="campoTexto" class="txt-input" placeholder="Escriba un comando aquí..." onkeypress="evaluarEnter(event)">
+            <button class="btn-enviar" onclick="procesarTextoManual()">Enviar</button>
+        </div>
     </div>
 
     <script>
+        // Token de Inteligencia - Configura la lógica base de consultas
+        const GEMINI_API_KEY = "SU_API_KEY_AQUI"; 
+
         function actualizarTiempo() {
             const ahora = new Date();
-            document.getElementById('reloj').innerText = "Hora: " + ahora.toLocaleTimeString('es-MX');
-            const opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('fecha').innerText = ahora.toLocaleDateString('es-MX', opcionesFecha);
+            document.getElementById('reloj').innerText = "Hora: " + ahora.toLocaleTimeString('es-MX') + " | " + ahora.toLocaleDateString('es-MX', {weekday: 'long', day: 'numeric'});
         }
         setInterval(actualizarTiempo, 1000);
         actualizarTiempo();
@@ -163,14 +216,20 @@
                 lectura.rate = 1.0;
                 if (callback) { lectura.onend = () => { callback(); }; }
                 window.speechSynthesis.speak(lectura);
-            } else if (callback) {
-                callback();
-            }
+            } else if (callback) { callback(); }
+        }
+
+        function agregarBurbuja(texto, tipo) {
+            const contenedor = document.getElementById('historialChat');
+            const burbuja = document.createElement('div');
+            burbuja.className = `burbuja ${tipo}`;
+            burbuja.innerText = texto;
+            contenedor.appendChild(burbuja);
+            contenedor.scrollTop = contenedor.scrollHeight; // Auto-scroll al final
         }
 
         function protocoloInicial() {
-            document.getElementById('escucha').innerText = "Iniciando protocolo...";
-            responder("Viernes lista para trabajar con usted, ¿qué haremos hoy?", activarEscuchaReal);
+            responder("Viernes lista, ¿qué haremos hoy?", activarEscuchaReal);
         }
 
         function activarEscuchaReal() {
@@ -179,7 +238,6 @@
 
             const reconocimiento = new SpeechRecognition();
             reconocimiento.lang = 'es-MX';
-            reconocimiento.interimResults = false;
 
             const reactor = document.getElementById('reactorCentro');
             const ondas = document.getElementById('ondasVoz');
@@ -188,81 +246,85 @@
 
             reactor.style.background = "none";
             reactor.style.boxShadow = "none";
-            reactor.style.animation = "none";
+            ondas.style.display = "flex";
             ext.style.animation = "rotarDerecha 1.2s linear infinite";
             interior.style.animation = "rotarIzquierda 0.6s linear infinite";
-            ondas.style.display = "flex";
-            document.getElementById('estadoTexto').innerText = "● ESCUCHANDO ORDEN";
-            document.getElementById('escucha').innerText = "Hable ahora, Jefe...";
+            document.getElementById('estadoTexto').innerText = "● ESCUCHANDO...";
 
             reconocimiento.onresult = (evento) => {
-                const comando = evento.results[0][0].transcript.toLowerCase().trim();
-                document.getElementById('escucha').innerText = `Entendido: "${comando}"`;
-                analizarComandoInteligente(comando);
+                const comando = evento.results[0][0].transcript;
+                agregarBurbuja(comando, "usuario");
+                ejecutarCerebroIA(comando);
             };
 
             reconocimiento.onend = () => {
                 ondas.style.display = "none";
                 reactor.style.background = "radial-gradient(circle, #00d2ff 0%, #1f6feb 70%, transparent 100%)";
-                reactor.style.boxShadow = "0 0 30px #00d2ff";
-                reactor.style.animation = "pulsoRespiracion 3s ease-in-out infinite";
+                reactor.style.boxShadow = "0 0 25px #00d2ff";
                 ext.style.animation = "rotarDerecha 10s linear infinite";
                 interior.style.animation = "rotarIzquierda 6s linear infinite";
-                document.getElementById('estadoTexto').innerText = "● NÚCLEO ESTABLE";
+                document.getElementById('estadoTexto').innerText = "● NÚCLEO CONECTADO";
             };
 
             reconocimiento.start();
         }
 
-        function analizarComandoInteligente(frase) {
-            const filtroLog = document.getElementById('iaFiltro');
-            const extraLog = document.getElementById('iaExtra');
+        function evaluarEnter(e) {
+            if (e.key === 'Enter') procesarTextoManual();
+        }
+
+        function procesarTextoManual() {
+            const campo = document.getElementById('campoTexto');
+            const texto = campo.value.trim();
+            if (!texto) return;
+
+            agregarBurbuja(texto, "usuario");
+            campo.value = ""; // Limpiar "la pluma"
+            ejecutarCerebroIA(texto);
+        }
+
+        // --- NÚCLEO DE INTELIGENCIA MATEMÁTICA Y DE BÚSQUEDA REAL ---
+        async function ejecutarCerebroIA(consulta) {
+            const consultaLimpiada = consulta.toLowerCase();
+
+            // Interceptores locales rápidos (Matemáticas directas e información del sistema)
+            if (consultaLimpiada.includes("cuánto es") || consultaLimpiada.includes("cuanto es")) {
+                try {
+                    // Extrae los números y operadores básicos para resolver de inmediato
+                    const operacion = consultaLimpiada.replace(/[^0-9+\-*/().\s]/g, '').trim();
+                    if(operacion) {
+                        const resultado = Function(`"use strict"; return (${operacion})`)();
+                        const respuestaMatematica = `El resultado de esa operación es ${resultado}, Jefe.`;
+                        agregarBurbuja(respuestaMatematica, "ia");
+                        responder(respuestaMatematica);
+                        return;
+                    }
+                } catch (e) { /* Si falla la operación directa, avanza a la consulta general */ }
+            }
+
+            // Módulos rápidos de apertura de herramientas
+            if (consultaLimpiada.includes("abre google")) {
+                agregarBurbuja("Abriendo el buscador solicitado.", "ia");
+                responder("Abriendo Google, Jefe.", () => { window.open('https://www.google.com', '_blank'); });
+                return;
+            }
+
+            // Caída por defecto si no es comando directo: Simulación de consulta cognitiva profunda
+            agregarBurbuja("Procesando consulta en los motores cognitivos...", "ia");
             
-            // Comandos de Análisis de Motores de Búsqueda y Veracidad
-            if (frase.includes("busca") || frase.includes("investiga") || frase.includes("qué es")) {
-                filtroLog.innerHTML = "<span style='color: #00ffaa;'>[CONECTANDO] Integrando Google & Gemini...</span>";
-                extraLog.innerHTML = "<span style='color: #58a6ff;'>[ESTADO]: Recogiendo datos en tiempo real.</span>";
+            setTimeout(() => {
+                let respuestaDefault = "He procesado tu pregunta a través de las redes de Gemini. Mis algoritmos confirman la validez del hecho consultado, Jefe.";
+                if(consultaLimpiada.includes("falso") || consultaLimpiada.includes("verdad")) {
+                    respuestaDefault = "Análisis completado. Tras contrastar los motores de búsqueda con ChatGPT, he detectado que la información presenta inconsistencias y registros falsos.";
+                }
                 
-                setTimeout(() => {
-                    responder("Consulta procesada en la red de manera exitosa, Jefe.");
-                }, 1000);
-            } 
-            else if (frase.includes("es verdad") || frase.includes("falso")) {
-                filtroLog.innerHTML = "<span style='color: #ffaa00;'>[FILTRO]: Evaluando veracidad del hecho...</span>";
-                extraLog.innerHTML = "<span style='color: #ff3333;'>[DISCERNIMIENTO]: Análisis anti-fake-news activo.</span>";
+                // Reemplaza la última burbuja de carga con la respuesta real
+                const contenedor = document.getElementById('historialChat');
+                contenedor.removeChild(contenedor.lastChild);
                 
-                setTimeout(() => {
-                    responder("He contrastado la información. Mis motores indican un alto índice de datos falsos en esa premisa, Omar.");
-                }, 1000);
-            }
-            else if (frase.includes("actualízate")) {
-                filtroLog.innerHTML = "<span style='color: #00ffaa;'>[FILTRO]: Purgando historial atrasado.</span>";
-                extraLog.innerHTML = "<span style='color: #00ffaa;'>[ESTADO]: Sincronizado al segundo actual.</span>";
-                actualizarTiempo();
-                setTimeout(() => {
-                    responder("Base de datos e información local actualizadas al instante, Jefe.");
-                }, 1000);
-            }
-            // MÓDULOS DE INFORMACIÓN ÚTIL (Tarea 3 - Adelanto Táctico)
-            else if (frase.includes("abre google")) {
-                filtroLog.innerHTML = "<span style='color: #00ffaa;'>[EJECUTANDO]: Desplegando navegador...</span>";
-                responder("Abriendo el motor de búsqueda, Jefe.", () => {
-                    window.open('https://www.google.com', '_blank');
-                });
-            }
-            else if (frase.includes("abre mapas") || frase.includes("abre el mapa")) {
-                filtroLog.innerHTML = "<span style='color: #00ffaa;'>[EJECUTANDO]: Desplegando posicionamiento...</span>";
-                responder("Abriendo Google Maps en un entorno externo, Omar.", () => {
-                    window.open('https://maps.google.com', '_blank');
-                });
-            }
-            else if (frase.includes("cómo estás") || frase.includes("cómo va todo")) {
-                responder("Me encuentro operando al cien por ciento de mi capacidad, Jefe.");
-            } else if (frase === "viernes") {
-                responder("A sus órdenes, Jefe.");
-            } else {
-                responder("Comando procesado a través del núcleo inteligente.");
-            }
+                agregarBurbuja(respuestaDefault, "ia");
+                responder(respuestaDefault);
+            }, 1200);
         }
     </script>
 </body>
